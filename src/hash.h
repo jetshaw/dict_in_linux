@@ -9,7 +9,7 @@
 #define __HASH_H____
 #include"hash_mem_manager.h"
 #define LINE_LEN_MAX 512
-#define WORDS_CNT 74 //"A-Z" "a-z" "-",...
+#define HASH_LEN 74 //"A-Z" "a-z" "-",...
 
 
 //哈希函数，将key哈希成val
@@ -47,6 +47,8 @@
                                 }\
                             }\
                         }
+typedef void * (p_common_callback_t)(void *);
+typedef void (common_callback_t)(void *);
 //哈希节点上的数据域结构
 struct data_struct
 {
@@ -55,7 +57,7 @@ struct data_struct
 };
 
 //哈希节点上的数据域的打印函数
-void print_data_struct(struct data_struct *data);
+void print_data_struct(struct data_struct *data,common_callback_t func);
 //基本哈希表，在下边有定义
 struct hash_table;
 
@@ -70,7 +72,7 @@ struct hash_node
 //基本哈希表，其实质就是由上边定义的哈希节点组成的数组，数组长度的来历参考宏定义中的哈希函数hash(x)
 struct hash_table
 {
-    struct hash_node arr[WORDS_CNT];//哈希节点数组
+    struct hash_node arr[HASH_LEN];//哈希节点数组
 };
 
 //由所有哈希表组成的数据仓库
@@ -87,8 +89,14 @@ int hash_init(struct data_house* house);
 //从哈希数据仓库中查找Key对应的业务数据，并返回装有业务数据的结构指针data_struct×
 struct data_struct *hash_get(char*key,struct data_house* house);
 
+//从业务数据中提取key值
+char* generate_key_for_data(p_common_callback_t * callback,void *data);
+
 //加载文本文件，丰富哈希数据仓库
-int hash_load(char* filename,struct data_house* house);
+int hash_load_from_file(char* filename,struct data_house* house,p_common_callback_t assemble_data);
+
+//将数据结构插入哈希数据仓库
+int hash_insert(void * data,struct data_house* house);
 
 //清空哈希数据仓库
 int clean_data_house(struct data_house* house);

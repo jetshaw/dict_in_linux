@@ -10,9 +10,15 @@
 #define TXT_FILE_PATH "../conf"
 #define FILENAME_LEN 128
 #define WORD_SIZE 64
+#include"business_data.h"
+//服务循环，接受网络和本地的客户端情求并返回查询结果
+void service_loop(struct data_house* house)
+{
+
+}
 
 //测试数据仓库的函数
-void test(struct data_house* house)
+void test_data_house(struct data_house* house)
 {
     __DEBUG;
     char buf[WORD_SIZE]={0};
@@ -27,7 +33,7 @@ void test(struct data_house* house)
         if(buf[0]=='\n')
             break;
         tmp = hash_get(buf,house);
-        print_data_struct(tmp);
+        print_data_struct(tmp,print_data);
     }
     return;
 }
@@ -61,13 +67,14 @@ int main(int argc,char** argv)
         strcpy(fullfilename,txtdir);
         strcat(fullfilename,"/");
         strcat(fullfilename,dp->d_name);
-        hash_load(fullfilename,&house);
+        hash_load_from_file(fullfilename,&house,assemble_data);
     }
-#if 1
-    //测试哈希数据仓库
-    test(&house);
+#if 1 
+    //在本机上测试哈希数据仓库
+    test_data_house(&house);
 #else
-
+    //进入服务循环，为网络和本地的客户端提供翻译服务
+    service_loop(&house);
 #endif
     //清空数据仓库
     clean_data_house(&house);
