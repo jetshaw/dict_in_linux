@@ -52,7 +52,8 @@ int main(int argc,char** argv)
 
     //创建哈希数据仓库
     struct data_house house;
-    assert(-1 != hash_init(&house,generate_key,assemble_data));
+    /*assert(-1 != hash_init(&house,generate_key,assemble_data));*/
+    assert(-1 != hash_init(&house,generate_key,NULL));
     /*printf("txtdir=%s\n",txtdir);*/
     DIR *dirp = opendir(txtdir);
     assert(dirp!=NULL);

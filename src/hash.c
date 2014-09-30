@@ -1,5 +1,5 @@
 /*
- * file : hash.h
+ * file : hash.c
  * author : xiaozai
  * 28-9-2014
  * email: xiaozai05@163.com
@@ -63,9 +63,17 @@ int hash_load_from_file(char* filename,struct data_house* house)
     assert(NULL != fp);
     while(NULL != fgets(buf, LINE_LEN_MAX, fp))
     {
-        format_data = house->assemble_data_func(buf);
+        if(house->assemble_data_func != NULL)
+            format_data = house->assemble_data_func(buf);
+        else
+        {
+            format_data = malloc(LINE_LEN_MAX*sizeof(char));
+            assert(format_data != NULL);
+            memcpy(format_data,buf,LINE_LEN_MAX*sizeof(char));
+        }
         if(NULL == format_data)continue;
-        hash_insert(format_data,house);
+        if( -1 == hash_insert(format_data,house) )
+            continue;
     }
     return 0;
 }
@@ -76,6 +84,7 @@ int hash_insert(void *data,struct data_house* house)
     if(data==NULL)
         return -1;
     char *key = NULL;
+    if(house->generate_key_func == NULL)return -1;
     key = generate_key_for_data(house->generate_key_func,data);
     if(key==NULL)
         return -1;

@@ -85,10 +85,10 @@ struct data_house
     p_common_callback_t *assemble_data_func;//组装业务数据结构的回调函数
 };
 
-//哈希数据仓库的初始化
+//哈希数据仓库的初始化,必要条件：将产生key的回调函数，组装业务数据结构的回调函数赋值
 int hash_init(struct data_house* house,p_common_callback_t generate_key_func,p_common_callback_t assemble_data_func);
 
-//从哈希数据仓库中查找Key对应的业务数据，并返回装有业务数据的结构指针data_struct×
+//从哈希数据仓库中查找Key对应的业务数据，并返回装有业务数据的结构指针data_struct*
 struct data_struct *hash_get(char*key,struct data_house* house);
 
 //从业务数据中提取key值

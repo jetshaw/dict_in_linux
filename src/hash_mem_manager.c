@@ -1,5 +1,5 @@
 /*
- * file : hash.h
+ * file : hash_mem_manager.c
  * author : xiaozai
  * 28-9-2014
  * email: xiaozai05@163.com
