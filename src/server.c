@@ -52,8 +52,8 @@ int main(int argc,char** argv)
 
     //创建哈希数据仓库
     struct data_house house;
-    assert(-1 != hash_init(&house));
-    printf("txtdir=%s\n",txtdir);
+    assert(-1 != hash_init(&house,generate_key,assemble_data));
+    /*printf("txtdir=%s\n",txtdir);*/
     DIR *dirp = opendir(txtdir);
     assert(dirp!=NULL);
     struct dirent *dp=NULL;
@@ -63,11 +63,11 @@ int main(int argc,char** argv)
     __DEBUG;
         if((dp->d_type != DT_REG)||(strcmp(".",dp->d_name)==0)||strcmp("..",dp->d_name)==0)
             continue;
-        printf("filename=%s\n",dp->d_name);
+        /*printf("filename=%s\n",dp->d_name);*/
         strcpy(fullfilename,txtdir);
         strcat(fullfilename,"/");
         strcat(fullfilename,dp->d_name);
-        hash_load_from_file(fullfilename,&house,assemble_data);
+        hash_load_from_file(fullfilename,&house);
     }
 #if 1 
     //在本机上测试哈希数据仓库

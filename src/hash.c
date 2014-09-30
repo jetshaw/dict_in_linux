@@ -7,7 +7,6 @@
 
 #include "hash.h" 
 #include"common.h"
-#include"business_data.h"
 
 //哈希节点上的数据域的打印函数
 void print_data_struct(struct data_struct *data,common_callback_t print_func)
@@ -26,11 +25,13 @@ void print_data_struct(struct data_struct *data,common_callback_t print_func)
 }
 
 //哈希数据仓库的初始化
-int hash_init(struct data_house*house)
+int hash_init(struct data_house*house,p_common_callback_t generate_key_func,p_common_callback_t assemble_data_func)
 {
     if(house==NULL)
         return -1;
     memset(house,0,sizeof(struct data_house));
+    house->generate_key_func = generate_key_func;
+    house->assemble_data_func = assemble_data_func;
 }
 
 //从业务数据中提取key值
@@ -42,7 +43,7 @@ char* generate_key_for_data(p_common_callback_t func,void *data)
 }
 
 //加载文本文件，丰富哈希数据仓库
-int hash_load_from_file(char* filename,struct data_house* house,p_common_callback_t assemble_data)
+int hash_load_from_file(char* filename,struct data_house* house)
 {
     __DEBUG;    
     if(filename == NULL)
@@ -62,7 +63,7 @@ int hash_load_from_file(char* filename,struct data_house* house,p_common_callbac
     assert(NULL != fp);
     while(NULL != fgets(buf, LINE_LEN_MAX, fp))
     {
-        format_data = assemble_data(buf);
+        format_data = house->assemble_data_func(buf);
         if(NULL == format_data)continue;
         hash_insert(format_data,house);
     }
@@ -75,7 +76,7 @@ int hash_insert(void *data,struct data_house* house)
     if(data==NULL)
         return -1;
     char *key = NULL;
-    key = generate_key_for_data(generate_key,data);
+    key = generate_key_for_data(house->generate_key_func,data);
     if(key==NULL)
         return -1;
     struct hash_table *tmp = NULL;

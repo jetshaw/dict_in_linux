@@ -81,10 +81,12 @@ struct data_house
     struct hash_table top_table;//数据仓库的顶级哈希表
     unsigned long long int words_cnt;//数据仓库中的业务数据的总条数
     struct hash_mem_manager mem_manager;//哈希内存的管理器结构
+    p_common_callback_t *generate_key_func;//产生key的回调函数 
+    p_common_callback_t *assemble_data_func;//组装业务数据结构的回调函数
 };
 
 //哈希数据仓库的初始化
-int hash_init(struct data_house* house);
+int hash_init(struct data_house* house,p_common_callback_t generate_key_func,p_common_callback_t assemble_data_func);
 
 //从哈希数据仓库中查找Key对应的业务数据，并返回装有业务数据的结构指针data_struct×
 struct data_struct *hash_get(char*key,struct data_house* house);
@@ -93,7 +95,7 @@ struct data_struct *hash_get(char*key,struct data_house* house);
 char* generate_key_for_data(p_common_callback_t * callback,void *data);
 
 //加载文本文件，丰富哈希数据仓库
-int hash_load_from_file(char* filename,struct data_house* house,p_common_callback_t assemble_data);
+int hash_load_from_file(char* filename,struct data_house* house);
 
 //将数据结构插入哈希数据仓库
 int hash_insert(void * data,struct data_house* house);
